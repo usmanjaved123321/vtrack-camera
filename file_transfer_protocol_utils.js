@@ -123,6 +123,7 @@ const sendbuffertoS3 = (device_status, conn) => {
   }
 
   var uploadedPath;
+  console.log("uploading");
   const params = {
     Bucket: "vtracksolutions/media", // pass your bucket name
     Key:
@@ -133,6 +134,7 @@ const sendbuffertoS3 = (device_status, conn) => {
       device_status.getExtension(),
     Body: temp_file_buff,
   };
+  console.log("params ", params);
   if (device_status.getExtension() == ".h265") {
      ConvertVideoFile(
       device_status.getDeviceDirectory(),
@@ -141,6 +143,8 @@ const sendbuffertoS3 = (device_status, conn) => {
     ); 
     
   }
+  console.log("updated params ", params);
+
   s3.upload(params, function (s3Err, temp_file_buff) {
     if (s3Err) {return LogStringLocal(s3Err);
   }
@@ -472,13 +476,14 @@ exports.LogString = LogStringLocal;
 
 function ConvertVideoFile(directory, filename, extension) {
   // fs.unlink(`./${directory}/${filename}.mp4`, (err) => {});
-  fs.unlink(`./${directory}/${filename}.h265`, (err) => {
-    if (err) {
-      console.error(`Error deleting original file: ${err.message}`);
-    } else {
-      console.log(`Original file deleted: ${`./${directory}/${filename}.mp4`}`);
-    }}
-  )
+  console.log("SD",`${directory}\\${filename}${extension}` )
+  // fs.unlink(`./${directory}/${filename}.h265`, (err) => {
+  //   if (err) {
+  //     console.error(`Error deleting original file: ${err.message}`);
+  //   } else {
+  //     console.log(`Original file deleted: ${`./${directory}/${filename}.h265`}`);
+  //   }}
+  // )
   const form_command = `ffmpeg -r 25 -i "${directory}\\${filename}${extension}" -ss 00:00:0.9 -c:a copy -c:v libx264 -preset ultrafast  "${directory}\\${filename}.mp4"`;
   exec(form_command, (error, stdout, stderr) => {
     if (error) {
@@ -769,7 +774,7 @@ exports.StateMachine = function (
             console.log("The file has been saved!");
           }
         );
-        if (device_status.getExtension() == ".h265") {
+        /* if (device_status.getExtension() == ".h265") {
           console.log("1")
          ConvertVideoFile(
             device_status.getDeviceDirectory(),
@@ -779,7 +784,7 @@ exports.StateMachine = function (
          
           
         }
-
+ */
         device_status.runCheckFunction(device_status, conn);
         let rx_pkg_cnt = device_status.getReceivedPackageCnt();
         var percent =
@@ -840,7 +845,20 @@ exports.StateMachine = function (
             fileType = 1;
           }
 
+          if (device_status.getExtension() == ".h265") {
+            console.log("2")
+             ConvertVideoFile(
+              device_status.getDeviceDirectory(),
+              device_status.getCurrentFilename(),
+              
+               device_status.getExtension()
+            ); 
+           
+            
+          }
+          
           var uploadedPath;
+          console.log("uploading start");
           const params = {
             Bucket: "vtracksolutions/media", // pass your bucket name
             Key:
@@ -848,19 +866,22 @@ exports.StateMachine = function (
               "/" +
               dateValue.valueOf() +
               device_status.getCurrentFilename() +
-              device_status.getExtension(),
+               ".mp4",
+               // device_status.getExtension(),
               Body: temp_file_buff,
           };
-          if (device_status.getExtension() == ".h265") {
-            console.log("2")
-             ConvertVideoFile(
-              device_status.getDeviceDirectory(),
-              device_status.getCurrentFilename(),
-              device_status.getExtension()
-            ); 
+          // if (device_status.getExtension() == ".h265") {
+          //   console.log("2")
+          //    ConvertVideoFile(
+          //     device_status.getDeviceDirectory(),
+          //     device_status.getCurrentFilename(),
+          //     ".mp4"
+          //     // device_status.getExtension()
+          //   ); 
            
             
-          }
+          // }
+          
           s3.upload(params, function (s3Err, temp_file_buff) {
             if (s3Err) return LogStringLocal(s3Err);
             uploadedPath = temp_file_buff.Location;

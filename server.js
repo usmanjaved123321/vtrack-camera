@@ -1,6 +1,6 @@
 const net = require("net");
-//const ftpu = require("./file_transfer_protocol_utils.js");
-const ftpu = require("./new");
+const ftpu = require("./file_transfer_protocol_utils.js");
+//const ftpu = require("./new");
 const cliProgress = require("cli-progress");
 const _colors = require("colors");
 require("events").EventEmitter.defaultMaxListeners = 0;
@@ -43,7 +43,7 @@ function handleConnection(conn) {
   function onConnData(d) {
     let cmd_size = 0;
     let cmd_id = 0;
-  //  console.log("onconndata",d)
+   console.log("onconndata",d)
  //   console.log("buffer_size",buffer_size,d.length)
      console.log("bar324567", bar1.lastDrawnString ) // progress bar send to client portal
     if (d.length < buffer_size) {
