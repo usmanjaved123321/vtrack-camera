@@ -1,0 +1,30 @@
+{
+  "name": "tcpvideoserver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.10.1",
+    "aws-sdk": "^2.1167.0",
+    "bluebird": "^3.7.2",
+    "cli-progress": "^3.11.1",
+    "colors": "^1.4.0",
+    "command-line-args": "^5.2.1",
+    "ffmpeg-static": "^5.2.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "fs": "0.0.1-security",
+    "mongodb": "^4.7.0",
+    "mongoose": "^6.3.8",
+    "net": "^1.0.2",
+    "process": "^0.11.10",
+    "redis": "^4.1.1",
+    "tls": "0.0.1",
+    "winston": "^3.7.2"
+  }
+}
